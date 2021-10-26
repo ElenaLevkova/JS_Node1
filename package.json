@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "les1": "node Lesson1/index.js",
+    "les2": "node Lesson2/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
