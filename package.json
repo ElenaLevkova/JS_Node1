@@ -7,11 +7,18 @@
     "les1": "node Lesson1/index.js",
     "les2": "node Lesson2/index.js",
     "les3": "node Lesson3/index.js",
+    "les4": "node Lesson4/index.js",
+    "cli": "node Lesson4/lesson4/cli.js",
     "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "bin": {
+    "reader": "cli.js"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "colors": "^1.4.0"
+    "colors": "^1.4.0",
+    "inquirer": "^8.2.0",
+    "yargs": "^17.2.1"
   }
 }
