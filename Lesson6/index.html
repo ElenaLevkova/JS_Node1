@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Socket</title>
+    <script src="https://cdn.socket.io/4.2.0/socket.io.min.js" integrity="sha384-PiBR5S00EtOj2Lto9Uu81cmoyZqR57XcOna1oAuVuIEjzj0wpqDVfD0JA9eXlRsj" crossorigin="anonymous"></script>
+</head>
+<body>
+<div class="nikName">
+    <label for="inputNik">Введите свой НИК</label>
+    <input id="inputNik" type="text" autofocus>
+    <button id="buttonNik">Login</button>
+    <p id="errorNik"></p>
+</div>
+<div class="users">
+    <p id="usersCount"></p>
+</div>
+
+<input id="input" type="text" autofocus hidden='true'>
+<button id="button" hidden='true'>Send</button>
+<div id="messages"></div>
+<script>
+    const socket = io('localhost:5555');
+    const messagesBlock = document.querySelector('#messages');
+    const sendButton = document.querySelector('#button');
+    const input = document.querySelector('#input');
+    const sendButtonNik = document.querySelector('#buttonNik');
+    const inputNik = document.querySelector('#inputNik');
+    const nikNameBlock = document.querySelector('.nikName');
+    const nikNameError = document.querySelector('#errorNik');
+    const usersCount = document.querySelector('#usersCount');
+
+    sendButtonNik.onclick = () => {
+        const data = {
+            name: inputNik.value,
+        };
+        socket.emit('client-nikname', data);
+        inputNik.value = '';
+    }
+
+    sendButton.onclick = () => {
+        const data = {
+            message: input.value,
+        };
+        socket.emit('client-msg', data);
+        input.value = '';
+    }
+
+    // socket.on('connect', () => {
+    //     console.log('Connected');
+    //     socket.emit('client-connection');
+    // });
+    // socket.on('server-connection', (payload) => {
+    //     messagesBlock.insertAdjacentHTML('afterbegin', `<div>Подключился пользователь ID:${payload.message}</div>`);
+    // });
+    socket.on('server-nikname-err', data => {
+        nikNameError.innerHTML = `Введите корректное имя!`;
+    });
+    socket.on('server-nikname-me', data => {
+        nikNameBlock.innerHTML = `Привет ${data.name}!`;
+        sendButton.hidden = false;
+        input.hidden = false;
+        usersCount.innerHTML = `Количество подключенных пользователей: ${data.usersCount}`;
+        // console.log('sendButton', sendButton.hidden, data.name);
+    });
+    socket.on('server-nikname-all', data => {
+        messagesBlock.insertAdjacentHTML('afterbegin', `<div>Подключился пользователь: ${data.name}</div>`);
+        usersCount.innerHTML = `Количество подключенных пользователей: ${data.usersCount}`;
+    });
+    socket.on('server-msg', data => {
+        messagesBlock.insertAdjacentHTML('afterbegin', `<div>${data.name}: ${data.message}</div>`);
+    });
+    socket.on('server-disconnection', data => {
+        messagesBlock.insertAdjacentHTML('afterbegin', `<div>Отключился пользователь: ${data.name}</div>`);
+        usersCount.innerHTML = `Количество подключенных пользователей: ${data.usersCount}`;
+    });
+</script>
+</body>
+</html>
